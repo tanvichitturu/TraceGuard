@@ -9,8 +9,11 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     falkordb_host: str = "localhost"
     falkordb_port: int = 6379
+    falkordb_username: str = "falkordb"
+    falkordb_password: str = ""
     graph_name: str = "traceguard"
     log_level: str = "INFO"
+    falkordb_ssl: bool = True
 
     # LLM configuration — all optional
     llm_provider: str = "deterministic"  # "openai" | "google" | "deterministic"

@@ -26,9 +26,12 @@ def get_client() -> falkordb.FalkorDB:
             settings.falkordb_port,
         )
         _client = falkordb.FalkorDB(
-            host=settings.falkordb_host,
-            port=settings.falkordb_port,
-        )
+    host=settings.falkordb_host,
+    port=settings.falkordb_port,
+    username=settings.falkordb_username,
+    password=settings.falkordb_password or None,
+    ssl=settings.falkordb_ssl,
+)
     return _client
 
 
