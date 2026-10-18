@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  falkordb:
+    image: falkordb/falkordb:latest
+    container_name: traceguard-falkordb
+    ports:
+      - "6379:6379"
+      - "3000:3000"
+    volumes:
+      - falkordb_data:/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: traceguard-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - FALKORDB_HOST=falkordb
+      - FALKORDB_PORT=6379
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY:-}
+      - LLM_PROVIDER=${LLM_PROVIDER:-deterministic}
+    depends_on:
+      falkordb:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./backend:/app
+
+volumes:
+  falkordb_data:
